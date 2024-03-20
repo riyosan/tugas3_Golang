@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Status</title>
+    <script>
+        function getStatus() {
+            fetch('/status')
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('water').innerText = data.water;
+                    document.getElementById('wind').innerText = data.wind;
+                    determineStatus(data.water, data.wind);
+                })
+                .catch(error => console.error('Error:', error));
+        }
+
+        function determineStatus(water, wind) {
+            let waterStatus = '';
+            let windStatus = '';
+
+            if (water < 5) {
+                waterStatus = 'Aman';
+            } else if (water >= 6 && water <= 8) {
+                waterStatus = 'Siaga';
+            } else {
+                waterStatus = 'Bahaya';
+            }
+
+            if (wind < 6) {
+                windStatus = 'Aman';
+            } else if (wind >= 7 && wind <= 15) {
+                windStatus = 'Siaga';
+            } else {
+                windStatus = 'Bahaya';
+            }
+
+            document.getElementById('waterStatus').innerText = waterStatus;
+            document.getElementById('windStatus').innerText = windStatus;
+        }
+
+        setInterval(getStatus, 15000);
+    </script>
+</head>
+<body onload="getStatus()">
+    <h1>Live Status</h1>
+    <p>Water Level: <span id="water"></span> meters (Status: <span id="waterStatus"></span>)</p>
+    <p>Wind Speed: <span id="wind"></span> meters/second (Status: <span id="windStatus"></span>)</p>
+</body>
+</html>
